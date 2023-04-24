@@ -31,7 +31,9 @@ duplicity:
     - group: root
     - mode: 700
     - makedirs: true
-    - content: {{ pillar['duplicity']['multi_config'] | tojson }}
+    - marker_start: "# Managed by Saltstack -DO-NOT-EDIT-"
+    - contents_pillar: duplicity:multi_config
+    - serializer: json
 {% endif %}
 
 # Deploy SSH keys
