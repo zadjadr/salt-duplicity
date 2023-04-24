@@ -34,7 +34,11 @@ control 'duplicity' do
     its('content') { should match /PASSPHRASE='your-super-secret-passphrase'/ }
     its('content') { should match /AWS_ACCESS_KEY_ID='your-access-key-id'/ }
     its('content') { should match /AWS_SECRET_ACCESS_KEY='your-secret-access-key'/ }
-    its('content') { should match /ftp:\/\/user:pass@your-server.com\/mybackup/ }
+  end
+
+  describe file('/etc/duplicity/multi.json') do
+    its('content') { should match /\"url\": \"boto3+s3:\/\/main-backup\/subdir\"/ }
+    its('content') { should match /\"url\": \"boto3+s3:\/\/secondary-backup\/subdir\"/ }
   end
 
   describe file('/usr/local/bin/duplicity-take-backup') do

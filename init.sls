@@ -25,7 +25,7 @@ duplicity:
 # Insert duplicity multi configuration
 {% if 'multi://' in pillar['duplicity']['backend'] %}
 # Deploy scripts
-/etc/xdg/duplicity/multi.json:
+/etc/duplicity/multi.json:
   file.managed:
     - user: root
     - group: root
