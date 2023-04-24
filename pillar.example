@@ -7,12 +7,23 @@ duplicity:
   # args: --s3-endpoint-url https://example.endpoint.com --s3-european-buckets
 
   # Multi example
+  # First bucket will use other credentials the the default AWS credentials provided below
   backend: multi:///etc/duplicity/multi.json?mode=mirror&onfail=abort
   multi_config: |
     [
       {
         "description": "Main AWS S3 bucket",
         "url": "boto3+s3://main-backup/subdir",
+        "env": [
+          {
+          "name" : "AWS_ACCESS_KEY_ID",
+          "value" : "xyz"
+          },
+          {
+          "name" : "AWS_SECRET_ACCESS_KEY",
+          "value" : "bar"
+          }
+        ]
       },
       {
         "description": "Seconday AWS S3 bucket",

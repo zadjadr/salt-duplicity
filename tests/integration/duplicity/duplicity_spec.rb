@@ -1,3 +1,5 @@
+require 'json'
+
 control 'duplicity' do
   title 'should be installed & configured'
 
@@ -36,9 +38,40 @@ control 'duplicity' do
     its('content') { should match /AWS_SECRET_ACCESS_KEY='your-secret-access-key'/ }
   end
 
-  describe file('/etc/duplicity/multi.json') do
-    its('content') { should match /\"url\": \"boto3+s3:\/\/main-backup\/subdir\"/ }
-    its('content') { should match /\"url\": \"boto3+s3:\/\/secondary-backup\/subdir\"/ }
+  describe 'multi.json file validation' do
+    let(:json_file) { File.read('/etc/duplicity/multi.json') }
+    let(:parsed_json) { JSON.parse(json_file) }
+    let(:expected_json_string) { <<~JSON
+      [
+        {
+          "description": "Main AWS S3 bucket",
+          "url": "boto3+s3://main-backup/subdir",
+          "env": [
+            {
+            "name" : "AWS_ACCESS_KEY_ID",
+            "value" : "xyz"
+            },
+            {
+            "name" : "AWS_SECRET_ACCESS_KEY",
+            "value" : "bar"
+            }
+          ]
+        },
+        {
+          "description": "Seconday AWS S3 bucket",
+          "url": "boto3+s3://secondary-backup/subdir"
+        }
+      ]
+    JSON
+    }
+  
+    it 'should be valid JSON' do
+      expect { parsed_json }.not_to raise_error
+    end
+  
+    it 'should match the expected JSON string' do
+      expect(json_file).to eq(expected_json_string)
+    end
   end
 
   describe file('/usr/local/bin/duplicity-take-backup') do
