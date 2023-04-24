@@ -1,5 +1,3 @@
-require 'json'
-
 control 'duplicity' do
   title 'should be installed & configured'
 
@@ -12,10 +10,13 @@ control 'duplicity' do
     its('version') { should cmp >= '0.8.13-ppa202005201506~ubuntu18.04.1' }
   end
 
-  # We're testing with an ftp:// URL, so make sure lftp is also installed
-  #
-  # NOTE: We're not testing s3:// and scp:// URLs, they should install python3-boto and
-  #       python3-paramiko respectively
+  # We're testing with an ftp://, s3:// and boto3+s3:// URL, so make sure all needed packages are installed
+  describe package('python3-boto3') do
+    it { should be_installed }
+  end
+  describe package('python3-boto') do
+    it { should be_installed }
+  end
   describe package('lftp') do
     it { should be_installed }
   end
@@ -59,7 +60,11 @@ control 'duplicity' do
         },
         {
           "description": "Seconday AWS S3 bucket",
-          "url": "boto3+s3://secondary-backup/subdir"
+          "url": "s3://secondary-backup/subdir"
+        },
+        {
+          "description": "Any FTP backend",
+          "url": "ftp://user:pass@your-server.com/mybackup"
         }
       ]
     JSON

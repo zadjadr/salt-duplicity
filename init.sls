@@ -14,11 +14,14 @@ duplicity:
       - duplicity
     {% if 'ftp://' in pillar['duplicity']['backend'] or 'ftp://' in pillar['duplicity']['multi_config'] %}
       - lftp
-    {% elif 'boto3+s3://' in pillar['duplicity']['backend'] or 'boto3+s3://' in pillar['duplicity']['multi_config'] %}
+    {% endif %}
+    {% if 'boto3+s3://' in pillar['duplicity']['backend'] or 'boto3+s3://' in pillar['duplicity']['multi_config'] %}
       - python3-boto3
-    {% elif 's3' in pillar['duplicity']['backend'] or 's3' in pillar['duplicity']['multi_config'] %}
+    {% endif %}
+    {% if 's3' in pillar['duplicity']['backend'] or 's3' in pillar['duplicity']['multi_config'] %}
       - python3-boto
-    {% elif 'scp://' in pillar['duplicity']['backend'] or 'scp://' in pillar['duplicity']['multi_config'] %}
+    {% endif %}
+    {% if 'scp://' in pillar['duplicity']['backend'] or 'scp://' in pillar['duplicity']['multi_config'] %}
       - python3-paramiko
     {% endif %}
 
